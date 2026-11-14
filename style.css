@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Rolagem suave ao clicar nos links do menu */
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+    /* --- Cores --- */
+    --cor-primaria: #5b4dff;
+    /* roxo/azul da marca (destaque) */
+    --cor-primaria-escura: #4638c9;
+    /* mesmo tom, mais escuro (hover) */
+    --cor-fundo: #f7f8fc;
+    /* cinza bem claro (fundo da página) */
+    --cor-card: #ffffff;
+    /* fundo dos cards */
+    --cor-texto: #23263b;
+    /* cinza escuro para textos */
+    --cor-texto-suave: #6b7089;
+    /* cinza médio (textos de apoio) */
+    --cor-clara: #ffffff;
+    /* branco puro */
+
+    /* --- Tamanhos --- */
+    --altura-header: 64px;
+    /* altura fixa do cabeçalho */
+    --espacamento: 2rem;
+    /* respiro padrão (padding/margens) */
+    --raio: 16px;
+    /* curvatura padrão dos cards/botões */
+    --tamanho-h1: 2rem;
+    /* título principal */
+    --tamanho-h2: 1.5rem;
+    /* títulos de seção */
+    --tamanho-texto: 1rem;
+    /* parágrafos */
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+}
+
+ul {
+    list-style: none;
+    /* remove as bolinhas das listas */
+}
+
+a {
+  text-decoration: none; /* remove o sublinhado dos links */
+  color: inherit; /* link herda a cor do texto do pai */
+}
+
+
