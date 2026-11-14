@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Font Awesome (ícones) - mesmo recurso da aula passada -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Nimbus | Seus arquivos na nuvem, sem dor de cabeça</title>
+  </head>
+  <body>
+    <!-- ============================================================
+         CABEÇALHO — Menu mobile SEM JavaScript (truque do checkbox)
+         A lógica: o checkbox é IRMÃO que vem ANTES do <nav>.
+         Quando marcado (:checked), o CSS seleciona com `~` e mostra o menu.
+         ============================================================ -->
+    <header>
+      <a class="logo" href="#inicio">
+        <i class="fa-solid fa-cloud"></i> Nimbus
+      </a>
+
+      <!-- Checkbox invisível que controla o menu -->
+      <input type="checkbox" id="menu-toggle" />
+
+      <!-- Ícone do menu (só aparece no celular).
+           Os DOIS ícones ficam dentro do mesmo label:
+           o CSS decide qual mostrar ☰ ou ✕ conforme o checkbox -->
+      <label class="toggle" for="menu-toggle">
+        <i class="fa-solid fa-bars"></i>
+        <i class="fa-solid fa-xmark"></i>
+      </label>
+
+      <nav>
+        <ul>
+          <li><a href="#recursos">Recursos</a></li>
+          <li><a href="#planos">Planos</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+          <!-- Botão de ação dentro do menu -->
+          <li><a class="btn btn-menu" href="#inicio">Começar grátis</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ============================================================
+         HERO — primeira dobra: apresentação do produto
+         Celular (base): tudo empilhado em 1 coluna.
+         Desktop (media query): texto à esquerda, imagem à direita.
+         ============================================================ -->
+    <section id="inicio">
+      <div class="hero-texto">
+        <!-- Etiqueta pequena em cima do título (modismo de landing page) -->
+        <span class="etiqueta">🚀 Novidade: 20 GB grátis</span>
+        <h1>
+          Seus arquivos na nuvem, <span class="destaque">sem dor de cabeça</span>
+        </h1>
+        <p>
+          O Nimbus guarda, sincroniza e compartilha seus trabalhos de qualquer
+          dispositivo. Simples como um pen drive, só que mais rápido e você
+          nunca perde.
+        </p>
+        <!-- Dois botões de ação (Call to Action) -->
+        <div class="hero-botoes">
+          <a href="#planos" class="btn btn-primario">Criar conta grátis</a>
+          <a href="#recursos" class="btn btn-ghost">Ver recursos</a>
+        </div>
+      </div>
+
+      <!-- PROMPT DA IMAGEM (hero-nimbus.png):
+           "Ilustração flat design moderna de uma jovem estudante sentada
+           em um notebook gigante enviando arquivos para uma nuvem flutuante,
+           paleta roxa e azul com fundo transparente ou branco, estilo
+           corporativo tech, minimalista, sem texto, alta resolução"
+      -->
+      <img
+        class="hero-imagem"
+        src="./assets/hero-nimbus.png"
+        alt="Estudante enviando arquivos para a nuvem"
+      />
+    </section>
+
+    <!-- ============================================================
+         RECURSOS — cards com ÍCONES do Font Awesome
+         (aqui não precisa de imagem: o ícone é texto + fonte!)
+         Celular: 1 card por linha | Tablet: 2 colunas | Desktop: 4
+         ============================================================ -->
+    <section id="recursos">
+      <h2>Por que usar o Nimbus?</h2>
+
+      <article class="card-recurso">
+        <i class="fa-solid fa-bolt icone"></i>
+        <h3>Rápido de verdade</h3>
+        <p>Upload em segundos mesmo com a internet da escola.</p>
+      </article>
+
+      <article class="card-recurso">
+        <i class="fa-solid fa-shield-halved icone"></i>
+        <h3>Segurança total</h3>
+        <p>Criptografia de ponta a ponta. Só você acessa seus arquivos.</p>
+      </article>
+
+      <article class="card-recurso">
+        <i class="fa-solid fa-users icone"></i>
+        <h3>Trabalho em equipe</h3>
+        <p>Compartilhe pastas com o grupo do projeto em um clique.</p>
+      </article>
+
+      <article class="card-recurso">
+        <i class="fa-solid fa-clock-rotate-left icone"></i>
+        <h3>Histórico de versões</h3>
+        <p>Apagou sem querer? Recupere qualquer versão anterior.</p>
+      </article>
+    </section>
+
+    <!-- ============================================================
+         PLANOS — o coração da aula de responsividade!
+         Celular: 1 coluna | Desktop: 3 colunas lado a lado.
+         O plano do meio tem a classe .destaque-card para sobressair.
+         ============================================================ -->
+    <section id="planos">
+      <h2>Planos para todos os bolsos</h2>
+      <p class="subtitulo">Cancele quando quiser. Sem letras miúdas.</p>
+
+      <article class="card-plano">
+        <h3>Free</h3>
+        <p class="preco">R$ 0<span>/mês</span></p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> 20 GB de espaço</li>
+          <li><i class="fa-solid fa-check"></i> 1 dispositivo</li>
+          <li><i class="fa-solid fa-check"></i> Suporte por e-mail</li>
+        </ul>
+        <a href="#inicio" class="btn btn-ghost">Começar grátis</a>
+      </article>
+
+      <article class="card-plano destaque-card">
+        <!-- Etiqueta "mais popular" só no plano do meio -->
+        <span class="tag">⭐ Mais popular</span>
+        <h3>Pro</h3>
+        <p class="preco">R$ 19<span>/mês</span></p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> 1 TB de espaço</li>
+          <li><i class="fa-solid fa-check"></i> Dispositivos ilimitados</li>
+          <li><i class="fa-solid fa-check"></i> Suporte prioritário</li>
+          <li><i class="fa-solid fa-check"></i> Histórico de 90 dias</li>
+        </ul>
+        <a href="#inicio" class="btn btn-primario">Assinar o Pro</a>
+      </article>
+
+      <article class="card-plano">
+        <h3>Família</h3>
+        <p class="preco">R$ 29<span>/mês</span></p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> 2 TB compartilhados</li>
+          <li><i class="fa-solid fa-check"></i> Até 6 pessoas</li>
+          <li><i class="fa-solid fa-check"></i> Controle parental</li>
+        </ul>
+        <a href="#inicio" class="btn btn-ghost">Assinar a Família</a>
+      </article>
+    </section>
+
+    <!-- ============================================================
+         DEPOIMENTOS — provas sociais do produto
+         Os "avatares" são ícones do Font Awesome dentro de um círculo:
+         NENHUMA imagem necessária aqui!
+         ============================================================ -->
+    <section id="depoimentos">
+      <h2>Quem usa, recomenda</h2>
+
+      <article class="card-depoimento">
+        <i class="fa-solid fa-user-graduate avatar"></i>
+        <p class="frase">
+          “Salvei meu TCC no Nimbus e apresentei direto do celular. Salvou minha
+          vida!”
+        </p>
+        <span class="autor">Marina S. — Estudante</span>
+      </article>
+
+      <article class="card-depoimento">
+        <i class="fa-solid fa-user-tie avatar"></i>
+        <p class="frase">
+          “Compartilho os arquivos da equipe toda semana. Nunca mais usei pen
+          drive.”
+        </p>
+        <span class="autor">Rafael L. — Desenvolvedor</span>
+      </article>
+
+      <article class="card-depoimento">
+        <i class="fa-solid fa-user-astronaut avatar"></i>
+        <p class="frase">
+          “Apaguei uma pasta importante e recuperei em 2 minutos pelo histórico.”
+        </p>
+        <span class="autor">Bianca T. — Designer</span>
+      </article>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer>
+      <p>
+        <i class="fa-solid fa-cloud"></i> Nimbus — projeto didático de PW-I
+      </p>
+      <p class="copyright">Feito com HTML + CSS (sem uma linha de JavaScript 😉)</p>
+    </footer>
+  </body>
+</html>
