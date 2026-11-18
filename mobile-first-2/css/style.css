@@ -1,0 +1,662 @@
+/* ============================================================
+   NIMBUS ☁️ — Landing page de startup (projeto didático)
+   ------------------------------------------------------------
+   TEMA DA AULA: MEDIA QUERIES com Mobile First
+   Escrevemos PRIMEIRO o estilo do CELULAR (base) e depois
+   "adicionamos" estilos com min-width conforme a tela cresce:
+   celular (base) → tablet 768px → desktop 1024px.
+
+   O que você vai aprender neste arquivo:
+   1) Reset com o seletor universal (*)
+   2) Variáveis CSS de COR e TAMANHO no :root
+   3) Menu mobile SEM JavaScript (checkbox + seletor ~ :checked)
+   4) Mobile First de verdade: base mobile + @media (min-width)
+   5) Como uma grade de cards "quebra" de 1 → 2 → 3/4 colunas
+   ============================================================ */
+
+/* ============================================================
+   1) RESET — zera as diferenças entre os navegadores
+   O seletor * pega TODOS os elementos da página.
+   box-sizing: border-box faz o width contar padding e borda
+   junto, então uma caixa de 100% nunca "vaza" da tela.
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Rolagem suave ao clicar nos links do menu */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================================================
+   2) VARIÁVEIS CSS — nossa "paleta de tinta" e nossa "régua"
+   Declaramos em :root (raiz do documento) e usamos com var().
+   Vantagem: quer trocar a cor do site inteiro? Muda SÓ aqui!
+   ============================================================ */
+:root {
+  /* --- Cores --- */
+  --cor-primaria: #5b4dff;      /* roxo/azul da marca (destaque) */
+  --cor-primaria-escura: #4638c9; /* mesmo tom, mais escuro (hover) */
+  --cor-fundo: #f7f8fc;         /* cinza bem claro (fundo da página) */
+  --cor-card: #ffffff;          /* fundo dos cards */
+  --cor-texto: #23263b;         /* cinza escuro para textos */
+  --cor-texto-suave: #6b7089;   /* cinza médio (textos de apoio) */
+  --cor-clara: #ffffff;         /* branco puro */
+
+  /* --- Tamanhos --- */
+  --altura-header: 64px;        /* altura fixa do cabeçalho */
+  --espacamento: 2rem;          /* respiro padrão (padding/margens) */
+  --raio: 16px;                 /* curvatura padrão dos cards/botões */
+  --tamanho-h1: 2rem;           /* título principal */
+  --tamanho-h2: 1.5rem;         /* títulos de seção */
+  --tamanho-texto: 1rem;        /* parágrafos */
+}
+
+/* ============================================================
+   3) ESTILOS GERAIS (valem para TODOS os tamanhos de tela)
+   ============================================================ */
+body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+ul {
+  list-style: none; /* remove as bolinhas das listas */
+}
+
+a {
+  text-decoration: none; /* remove o sublinhado dos links */
+  color: inherit; /* link herda a cor do texto do pai */
+}
+
+/* --- Cabeçalho fixo no topo --- */
+header {
+  position: fixed;   /* fica grudado no topo mesmo rolando a página */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--altura-header);
+  background-color: var(--cor-clara);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); /* sombra SUAVE = moderno */
+  z-index: 2000;     /* fica POR CIMA do menu e do conteúdo */
+}
+
+header .logo {
+  position: absolute;
+  top: 50%;
+  left: var(--espacamento);
+  transform: translateY(-50%); /* truque para centralizar na vertical */
+  color: var(--cor-primaria);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+/* O checkbox que controla o menu fica invisível */
+input[type="checkbox"] {
+  display: none;
+}
+
+/* ============================================================
+   4) MENU MOBILE SEM JAVASCRIPT — o truque do checkbox 🤯
+   ------------------------------------------------------------
+   Como funciona?
+   a) O <input type="checkbox"> é invisível, mas o <label> aponta
+      para ele (for="menu-toggle"). Clicar no label = marcar/desmarcar.
+   b) O seletor #menu-toggle:checked ~ nav usa o `~` (irmão geral):
+      "quando o checkbox ESTIVER MARCADO, estilize o nav que vem
+      DEPOIS dele no mesmo nível do HTML".
+   c) O nav entra e sai da tela com transform + transition.
+   ============================================================ */
+
+/* Ícone do menu (hamburguer ☰ e fechar ✕)
+   O label tem DOIS ícones: por padrão mostramos só o ☰ ...
+   O z-index: 1001 é ESSENCIAL: ele deixa o ícone numa camada
+   ACIMA do nav (que tem z-index: 1000). Sem isso, quando o
+   menu abre, ele cobre o próprio botão de fechar! */
+header .toggle {
+  position: absolute;
+  top: 50%;
+  right: var(--espacamento);
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: var(--cor-primaria);
+  cursor: pointer;
+  z-index: 1001; /* acima do menu (1000) = clique sempre funciona */
+}
+
+/* ... e o ✕ fica escondido */
+header .toggle .fa-xmark {
+  display: none;
+}
+
+/* ✨ Checkbox marcado: esconde o ☰ ... */
+#menu-toggle:checked ~ .toggle .fa-bars {
+  display: none;
+}
+
+/* ✨ ... e mostra o ✕ (para fechar o menu) */
+#menu-toggle:checked ~ .toggle .fa-xmark {
+  display: inline;
+}
+
+/* Menu em tela cheia, cobrindo tudo (apenas no celular) */
+nav {
+  position: fixed;
+  inset: 0; /* atalho moderno para top/right/bottom/left = 0 */
+  background-color: var(--cor-clara);
+  display: flex;
+  justify-content: center; /* centraliza horizontal */
+  align-items: center;     /* centraliza vertical */
+  z-index: 1000;
+  /* Começa ESCONDIDO, empurrado para fora da tela (para cima) */
+  transform: translateY(-120%);
+  transition: transform 0.4s ease;
+}
+
+/* ✨ A MÁGICA: checkbox marcado -> menu desce para a tela */
+#menu-toggle:checked ~ nav {
+  transform: translateY(0);
+}
+
+/* Links do menu: empilhados e grandes (fáceis de tocar) */
+nav ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacamento);
+}
+
+nav ul li a {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+  position: relative; /* âncora para o sublinhado (::after) se posicionar */
+  transition: color 0.3s ease;
+}
+
+/* ✨ EFEITO "VARREDURA" no hover ✨
+   O sublinhado ENTRA pela esquerda e SAI pela direita:
+   - No estado normal: scaleX(0) + transform-origin: right
+   - No hover:        scaleX(1) + transform-origin: left
+   A "mágica" está em trocar o transform-origin nos dois estados:
+   ele cresce ancorado na ESQUERDA e encolhe ancorado na DIREITA,
+   então o risco parece atravessar o link de um lado ao outro! */
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--cor-primaria), #00c2ff);
+  transform: scaleX(0);       /* começa invisível (largura 0) */
+  transform-origin: right;    /* ponto de fuga do "fim" da animação */
+  transition: transform 0.35s ease;
+}
+
+/* O botão "Começar grátis" já tem pílula própria: fica de fora */
+nav ul li a:not(.btn-menu):hover {
+  color: var(--cor-primaria);
+}
+
+nav ul li a:not(.btn-menu):hover::after {
+  transform: scaleX(1);       /* sublinhado cresce (vira 100%) */
+  transform-origin: left;     /* ponto de partida do "início" */
+}
+
+/* ============================================================
+   BOTÕES — um estilo só, duas "caras" (classes combinadas)
+   .btn é a base | .btn-primario é o principal | .btn-ghost o suave
+   ============================================================ */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 1.6rem;
+  border-radius: 50px; /* 50px = botão "pílula" (moderno) */
+  font-weight: 700;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Botão principal: fundo colorido */
+.btn-primario {
+  background-color: var(--cor-primaria);
+  color: var(--cor-clara);
+}
+
+.btn-primario:hover {
+  background-color: var(--cor-primaria-escura);
+}
+
+/* Botão "fantasma": só a borda colorida */
+.btn-ghost {
+  border: 2px solid var(--cor-primaria);
+  color: var(--cor-primaria);
+  background-color: transparent;
+}
+
+.btn-ghost:hover {
+  background-color: var(--cor-primaria);
+  color: var(--cor-clara);
+}
+
+/* ============================================================
+   5) SEÇÕES — base mobile (1 coluna, empilhadas)
+   ============================================================ */
+section {
+  padding: calc(var(--altura-header) + var(--espacamento)) var(--espacamento)
+    var(--espacamento);
+  /* A soma acima garante que o conteúdo NÃO fique escondido
+     atrás do header fixo (só a 1ª seção precisa, mas o padding
+     extra em todas mantém o ritmo visual da página) */
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column; /* celular: tudo empilhado */
+  gap: var(--espacamento);
+  border-bottom: 1px solid #e8eaf3; /* divisória bem sutil */
+}
+
+section h2 {
+  font-size: var(--tamanho-h2);
+  text-align: center;
+}
+
+.subtitulo {
+  text-align: center;
+  color: var(--cor-texto-suave);
+}
+
+/* ---------- HERO ---------- */
+#inicio {
+  justify-content: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.etiqueta {
+  /* "pílula" pequena acima do título (modismo de landing page) */
+  align-self: center;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  background-color: #eceaff; /* roxinho bem claro */
+  color: var(--cor-primaria);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+#inicio h1 {
+  font-size: var(--tamanho-h1);
+  line-height: 1.3;
+}
+
+/* Palavra colorida dentro do título (gradiente = moderno) */
+.destaque {
+  background: linear-gradient(90deg, var(--cor-primaria), #00c2ff);
+  -webkit-background-clip: text;      /* recorta o fundo NO formato do texto */
+  background-clip: text;
+  color: transparent;                 /* o "text" vira janela do gradiente */
+}
+
+#inicio p {
+  color: var(--cor-texto-suave);
+  font-size: var(--tamanho-texto);
+  line-height: 1.6;
+}
+
+.hero-botoes {
+  display: flex;
+  flex-direction: column; /* celular: botões empilhados */
+  gap: 1rem;
+}
+
+.hero-imagem {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* ---------- CARDS DE RECURSOS ---------- */
+.card-recurso {
+  background-color: var(--cor-card);
+  border-radius: var(--raio);
+  padding: var(--espacamento);
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); /* sombra suave */
+}
+
+.icone {
+  /* O ícone dentro de um círculo colorido (feito 100% com CSS!) */
+  font-size: 1.6rem;
+  color: var(--cor-primaria);
+  background-color: #eceaff;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;         /* círculo perfeito */
+  display: inline-flex;       /* flex para centralizar o ícone dentro */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.card-recurso h3 {
+  margin-bottom: 0.5rem;
+}
+
+.card-recurso p {
+  color: var(--cor-texto-suave);
+  font-size: 0.95rem;
+}
+
+/* ---------- CARDS DE PLANOS ---------- */
+.card-plano {
+  position: relative;          /* âncora para a .tag ficar posicionada */
+  background-color: var(--cor-card);
+  border-radius: var(--raio);
+  padding: var(--espacamento);
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Plano do meio: borda colorida para "gritar" mais alto */
+.destaque-card {
+  border: 3px solid var(--cor-primaria);
+}
+
+.tag {
+  position: absolute;          /* "solta" em cima da borda do card */
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--cor-primaria);
+  color: var(--cor-clara);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 1rem;
+  border-radius: 50px;
+}
+
+.preco {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--cor-primaria);
+  margin: 0.5rem 0 1rem;
+}
+
+.preco span {
+  font-size: 0.9rem;   /* o "/mês" fica bem menor que o preço */
+  color: var(--cor-texto-suave);
+}
+
+.card-plano ul {
+  text-align: left;    /* lista de benefícios alinhada à esquerda */
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: var(--espacamento);
+}
+
+.card-plano .fa-check {
+  color: var(--cor-primaria); /* "check" verde? aqui é da marca! */
+  margin-right: 0.4rem;
+}
+
+.card-plano .btn {
+  width: 100%;
+  text-align: center;
+}
+
+/* ---------- CARDS DE DEPOIMENTOS ---------- */
+.card-depoimento {
+  background-color: var(--cor-card);
+  border-radius: var(--raio);
+  padding: var(--espacamento);
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.avatar {
+  font-size: 1.4rem;
+  color: var(--cor-clara);
+  background: linear-gradient(135deg, var(--cor-primaria), #00c2ff);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.frase {
+  font-style: italic;
+  color: var(--cor-texto-suave);
+  margin-bottom: 1rem;
+}
+
+.autor {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ---------- RODAPÉ ---------- */
+footer {
+  background-color: #23263b; /* azul quase preto = fechamento sério */
+  color: var(--cor-clara);
+  text-align: center;
+  padding: var(--espacamento);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+footer .fa-cloud {
+  color: var(--cor-primaria);
+}
+
+.copyright {
+  font-size: 0.85rem;
+  color: #9aa0b8;
+}
+
+/* ============================================================
+   6) MEDIA QUERIES — agora o layout CRESCE (Mobile First!)
+   Regra de ouro: use apenas min-width ("A PARTIR de X pixels")
+   e vá ADICIONANDO estilos. Nunca comece pelo desktop!
+   ============================================================ */
+
+/* ---------- 📱 TABLET: a partir de 768px ---------- */
+@media (min-width: 768px) {
+
+  /* No tablet+ o menu mora na barra do header,
+     então o ícone de abrir desaparece */
+  header .toggle {
+    display: none;
+  }
+
+  /* O nav volta a ser uma barra normal (deixa de ser tela cheia) */
+  nav {
+    position: static;      /* volta para o fluxo normal do header */
+    transform: none;       /* sempre visível: sem depender do clique */
+    inset: auto;           /* desfaz o inset: 0 do mobile */
+    height: var(--altura-header);
+    display: flex;
+    justify-content: flex-end; /* links encostados à direita */
+    padding-right: var(--espacamento);
+  }
+
+  /* Links agora em LINHA (horizontais) e menores */
+  nav ul {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  nav ul li a {
+    font-size: 1rem;
+  }
+
+  /* Botão "Começar grátis" do menu vira pílula colorida */
+  .btn-menu {
+    padding: 0.5rem 1.2rem;
+    background-color: var(--cor-primaria);
+    color: var(--cor-clara) !important; /* vence a cor herdada do link */
+  }
+
+  /* Recursos: grade de 2 colunas */
+  #recursos {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
+    align-items: start;
+  }
+
+  /* O título ocupa as 2 colunas inteiras */
+  #recursos h2 {
+    grid-column: 1 / 3;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Depoimentos: também 2 colunas */
+  #depoimentos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  #depoimentos h2 {
+    grid-column: 1 / 3;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ---------- 🖥️ DESKTOP: a partir de 1024px ---------- */
+@media (min-width: 1024px) {
+
+  /* No desktop, cada seção ocupa a ALTURA INTEIRA da tela
+     (100vh = 100% da altura da viewport).
+     Efeito: cada bloco da página vira uma "tela" completa,
+     como se você folheasse slides ao rolar.
+     Usamos min-height (e não height) por segurança: se o
+     conteúdo for maior que a tela, a seção cresce em vez de
+     vazar/esticar. No celular deixamos 80vh para o conteúdo
+     respirar sem forçar telas vazias demais. */
+  section {
+    min-height: 100vh;
+  }
+
+  /* Hero vira 2 colunas: texto à esquerda, imagem à direita */
+  #inicio {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr; /* texto ganha mais espaço */
+    align-items: center;
+    text-align: left;
+    gap: var(--espacamento);
+    padding-top: calc(var(--altura-header) + var(--espacamento));
+  }
+
+  /* Elementos que eram centralizados voltam para a esquerda */
+  #inicio .etiqueta {
+    align-self: start;
+  }
+
+  .hero-botoes {
+    flex-direction: row;   /* botões lado a lado no desktop */
+  }
+
+  .hero-imagem {
+    max-width: 100%;
+  }
+
+  /* Recursos: 4 cards lado a lado */
+  #recursos {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #recursos h2 {
+    grid-column: 1 / 5;
+  }
+
+  /* Planos: 3 colunas — e o do meio sobe um pouquinho
+     (efeito clássico de página de preços).
+     A seção ocupa a viewport inteira (igual às outras);
+     os CARDS é que ficam limitados entre 260px e 340px.
+     O justify-content: center centraliza a grade inteira
+     quando sobra espaço na tela grande. */
+  #planos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 340px));
+    justify-content: center; /* centraliza a grade na viewport */
+    align-items: center;
+    width: 100%;
+  }
+
+  #planos h2,
+  #planos .subtitulo {
+    grid-column: 1 / 4;
+  }
+
+  .destaque-card {
+    transform: scale(1.05); /* cresce 5% e chama atenção */
+  }
+
+  /* Depoimentos: 3 colunas */
+  #depoimentos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #depoimentos h2 {
+    grid-column: 1 / 4;
+  }
+
+  /* Tipografia maior para leitura à distância */
+  #inicio h1 {
+    font-size: 3rem;
+  }
+
+  section h2 {
+    font-size: var(--tamanho-h1);
+  }
+}
+
+/* ============================================================
+   7) BÔNUS 1 — MODO ESCURO AUTOMÁTICO 🌙
+   O site respeita o tema do SISTEMA do usuário.
+   AQUI AS VARIÁVEIS BRILHAM: basta trocar os valores e o site
+   INTEIRO muda de tema de uma vez só!
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cor-fundo: #16182a;        /* fundo escuro */
+    --cor-card: #23263b;         /* cards escuros */
+    --cor-texto: #f0f1f7;        /* texto claro */
+    --cor-texto-suave: #9aa0b8;  /* texto de apoio claro */
+    --cor-clara: #16182a;        /* header/rodapé acompanham */
+  }
+
+  /* A etiqueta clara não combina com fundo escuro: ajuste fino */
+  .etiqueta {
+    background-color: rgba(91, 77, 255, 0.25);
+  }
+}
+
+/* ============================================================
+   8) BÔNUS 2 — HOVER só para quem tem MOUSE 🖱️
+   No celular não existe "passar o mouse", então o efeito de
+   levantar o card só vale para telas com hover de verdade.
+   Teste real: no celular, tocar no card NÃO ativa o efeito.
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  .card-recurso,
+  .card-plano,
+  .card-depoimento {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-recurso:hover,
+  .card-depoimento:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+}
